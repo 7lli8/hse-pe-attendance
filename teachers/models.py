@@ -1,12 +1,15 @@
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-
+from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import ForeignKey, PrimaryKeyConstraint, ForeignKeyConstraint
 from database import Base
 
 class Teacher(Base):
     __tablename__ = "teachers"
 
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    corporate_email: Mapped[str] = mapped_column(unique=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id"),
+        primary_key=True,
+        unique=True,
+    )
 
     first_name: Mapped[str]
     last_name: Mapped[str]

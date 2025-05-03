@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, PrimaryKeyConstraint
 
 from database import Base
 from groups.models import Group
@@ -8,8 +8,11 @@ from groups.models import Group
 class Student(Base):
     __tablename__ = "students"
 
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    corporate_email: Mapped[str] = mapped_column(unique=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id"),
+        primary_key=True,
+        unique=True,
+    )
 
     first_name: Mapped[str]
     last_name: Mapped[str]

@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse
 
 from teachers.router import router as teachers_router
 
+from users.models import User
 from teachers.models import Teacher
 from sections.models import Section
 from schedule.models import Schedule
