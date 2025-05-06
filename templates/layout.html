@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    {% block head %}
+    {% endblock %}
+</head>
+
+<body>
+    <nav style="display: flex; justify-content: flex-end;">
+        {% if user %}
+        <div>
+            <a href="{{ url_for('users.profile') }}">{{ user.corporate_email }}</a>
+        </div>
+        {% else %}
+        <div>
+            <a href="{{ url_for('users.login') }}">Войти</a>
+        </div>
+        {% endif %}
+    </nav>
+    <main>{% block content %}{% endblock %}</main>
+</body>
+
+</html>

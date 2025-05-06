@@ -1,22 +1,34 @@
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from starlette_session import SessionMiddleware
+from starlette_wtf import CSRFProtectMiddleware
 
+from attendance_requirements.models import AttendanceRequirement  # noqa
+from attendances.models import Attendance  # noqa
+from extra_attendances.models import ExtraAttendance  # noqa
+from groups.models import Group  # noqa
+from schedule.models import Schedule  # noqa
+from sections.models import Section  # noqa
+from settings import settings
+from students.models import Student  # noqa
+from teachers.models import Teacher  # noqa
 from teachers.router import router as teachers_router
-
-from users.models import User
-from teachers.models import Teacher
-from sections.models import Section
-from schedule.models import Schedule
-from groups.models import Group
-from students.models import Student
-from extra_attendances.models import ExtraAttendance
-from attendances.models import Attendance
-from attendance_requirements.models import AttendanceRequirement
 from templates import templates
+from users.models import User  # noqa
+from users.router import router as users_router
 
 app = FastAPI()
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=settings.secret_key,
+    cookie_name="session",
+)
+app.add_middleware(
+    CSRFProtectMiddleware,
+    csrf_secret=settings.secret_key,
+)
 
 app.include_router(teachers_router, prefix="/teachers")
+app.include_router(users_router, prefix="/users")
 
 
 @app.get("/")

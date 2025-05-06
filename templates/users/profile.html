@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Профиль
+{% endblock %}
+
+{% block content %}
+<p>Email: {{ user.corporate_email }}</p>
+<form action="{{ url_for('users.logout') }}" method="post">
+    <button type="submit">Выйти</button>
+</form>
+{% endblock %}

@@ -1,6 +1,8 @@
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import ForeignKey, PrimaryKeyConstraint, ForeignKeyConstraint
+
 from database import Base
+
 
 class Teacher(Base):
     __tablename__ = "teachers"

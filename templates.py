@@ -1,3 +1,24 @@
+from typing import Any
+
+from fastapi import Request
 from fastapi.templating import Jinja2Templates
 
-templates = Jinja2Templates(directory="templates")
+from database.session import Session
+from users.database import get_user_by_id
+from users.session import get_user_id
+
+
+def get_user_from_request(request: Request) -> dict[str, Any]:
+    user_id = get_user_id(request)
+    if not user_id and not isinstance(user_id, int):
+        return {}
+    with Session() as session:
+        user = get_user_by_id(session, user_id)
+        if not user:
+            return {}
+        return {"user": user}
+
+
+templates = Jinja2Templates(
+    directory="templates", context_processors=[get_user_from_request]
+)

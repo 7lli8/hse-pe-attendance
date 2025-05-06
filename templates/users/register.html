@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% from "_macros.html" import render_field %}
+
+{% block title %}
+Регистрация
+{% endblock %}
+
+{% block content %}
+<form action="{{ url_for('users.register') }}" method="post">
+    {{ form.csrf_token }}
+    {{ render_field(form.email) }}
+    {{ render_field(form.password) }}
+    {{ render_field(form.password_confirm) }}
+    <button type="submit">Создать аккаунт</button>
+    <a href="{{ url_for('users.login') }}">или войдите в аккаунт</a>
+</form>
+{% endblock %}
