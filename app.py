@@ -10,6 +10,7 @@ from schedule.models import Schedule  # noqa
 from sections.models import Section  # noqa
 from settings import settings
 from students.models import Student  # noqa
+from students.router import router as students_router
 from teachers.models import Teacher  # noqa
 from teachers.router import router as teachers_router
 from templates import templates
@@ -29,6 +30,7 @@ app.add_middleware(
 
 app.include_router(teachers_router, prefix="/teachers")
 app.include_router(users_router, prefix="/users")
+app.include_router(students_router, prefix="/students")
 
 
 @app.get("/")

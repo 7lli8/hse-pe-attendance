@@ -19,11 +19,11 @@ def get_current_user(
 ) -> User:
     user_id = get_user_id(request)
     if not user_id or not isinstance(user_id, int):
-        raise raise_unauthorized_and_redirect()
+        raise raise_unauthorized_and_redirect(request)
 
     if user := get_user_by_id(session, cast(int, user_id)):
         return user
-    raise raise_unauthorized_and_redirect()
+    raise raise_unauthorized_and_redirect(request)
 
 
 GetCurrentUser = Annotated[User, Depends(get_current_user)]
@@ -44,9 +44,9 @@ def get_optional_user(
 GetOptionalUser = Annotated[User | None, Depends(get_optional_user)]
 
 
-def raise_unauthorized_and_redirect():
-    # TODO: add redirect to login
+def raise_unauthorized_and_redirect(request: Request):
+    # TODO: add redirect after login
     return HTTPException(
-        status.HTTP_401_UNAUTHORIZED,
-        detail="Authorization required to permit operation",
+        status.HTTP_307_TEMPORARY_REDIRECT,
+        headers={"Location": str(request.url_for("users.login"))},
     )

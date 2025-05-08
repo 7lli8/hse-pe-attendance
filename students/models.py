@@ -20,4 +20,4 @@ class Student(Base):
     course: Mapped[int]
 
     group_id: Mapped[int] = mapped_column(ForeignKey("groups.id"))
-    group: Mapped[Group] = relationship()
+    group: Mapped[Group] = relationship(lazy="joined")

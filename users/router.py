@@ -6,7 +6,7 @@ from templates import templates
 
 from .controllers import login_user, register_user
 from .deps import GetCurrentUser
-from .forms import LoginForm, RegisterForm
+from .forms import LoginForm, RegisterForm, get_user_form
 from .session import remove_user_id
 
 router = APIRouter()
@@ -54,10 +54,7 @@ async def login_get(
 
 
 @router.post("/login", name="users.login")
-async def login_post(
-    request: Request,
-    session: GetSession,
-):
+async def login_post(request: Request, session: GetSession):
     form = await LoginForm.from_formdata(request)
     if not await form.validate():
         return templates.TemplateResponse(
@@ -75,9 +72,12 @@ async def login_post(
 
 
 @router.get("/profile", name="users.profile")
-def profile(request: Request, user: GetCurrentUser):
+async def profile(request: Request, session: GetSession, user: GetCurrentUser):
+    form = await get_user_form(request, session, user)
     return templates.TemplateResponse(
-        request, "users/profile.html", {"user": user}
+        request,
+        "users/profile.html",
+        {"user": user, "form": form},
     )
 
 
