@@ -8,8 +8,12 @@ from users.models import User
 
 
 class StudentForm(StarletteForm):
-    first_name = fields.StringField("Имя", validators=[validators.DataRequired()])
-    last_name = fields.StringField("Фамилия", validators=[validators.DataRequired()])
+    first_name = fields.StringField(
+        "Имя", validators=[validators.DataRequired()]
+    )
+    last_name = fields.StringField(
+        "Фамилия", validators=[validators.DataRequired()]
+    )
     middle_name = fields.StringField("Отчество", validators=[])
 
     course = fields.SelectField(
@@ -20,6 +24,7 @@ class StudentForm(StarletteForm):
     )
 
     group = fields.SelectField("Группа", validators=[validators.DataRequired()])
+    submit = fields.SubmitField("Сохранить профиль студента")
 
     @classmethod
     async def create(

@@ -17,3 +17,5 @@ class Teacher(Base):
     last_name: Mapped[str]
     middle_name: Mapped[str | None] = mapped_column(default=None)
     position: Mapped[str]
+
+    is_verified: Mapped[bool] = mapped_column(server_default="false")

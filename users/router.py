@@ -88,3 +88,8 @@ def logout(request: Request):
         request.url_for("users.login"),
         status.HTTP_302_FOUND,
     )
+
+
+@router.get("/forbidden", name="users.forbidden")
+def forbidden():
+    return "You don't have access"

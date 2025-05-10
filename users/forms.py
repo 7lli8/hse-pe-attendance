@@ -1,8 +1,7 @@
 from fastapi import Request
 from sqlalchemy.orm import Session
 from starlette_wtf import StarletteForm
-from wtforms import validators
-from wtforms.fields import EmailField, PasswordField
+from wtforms import fields, validators
 
 from students.forms import StudentForm
 from teachers.forms import TeacherForm
@@ -10,8 +9,8 @@ from users.models import User
 
 
 class RegisterForm(StarletteForm):
-    email = EmailField("E-Mail", validators=[validators.DataRequired()])
-    password = PasswordField(
+    email = fields.EmailField("E-Mail", validators=[validators.DataRequired()])
+    password = fields.PasswordField(
         "Пароль",
         [
             validators.DataRequired(),
@@ -20,21 +19,23 @@ class RegisterForm(StarletteForm):
             ),
         ],
     )
-    password_confirm = PasswordField("Повторите пароль")
+    password_confirm = fields.PasswordField("Повторите пароль")
+    submit = fields.SubmitField("Создать аккаунт")
 
 
 class LoginForm(StarletteForm):
-    email = EmailField("E-Mail", validators=[validators.DataRequired()])
-    password = PasswordField(
+    email = fields.EmailField("E-Mail", validators=[validators.DataRequired()])
+    password = fields.PasswordField(
         "Пароль",
         [
             validators.DataRequired(),
         ],
     )
+    submit = fields.SubmitField("Войти в аккаунт")
 
 
 async def get_user_form(request: Request, session: Session, user: User):
     if user.student or user.has_student_email:
         return await StudentForm.create(request, session, user)
     if user.teacher:
-        return TeacherForm(request)
+        return await TeacherForm.from_formdata(request, obj=user.teacher)

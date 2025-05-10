@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% from "_macros.html" import render_field %}
+{% from "_macros.html" import render_form, render_field %}
 
 {% block title %}
 Профиль
@@ -9,23 +9,9 @@
 <p>Email: {{ user.corporate_email }}</p>
 
 {% if user.student or user.has_student_email %}
-<form action="{{ url_for('students.profile') }}" method="post">
-    {{ form.csrf_token }}
-    {{ render_field(form.first_name) }}
-    {{ render_field(form.last_name) }}
-    {{ render_field(form.middle_name) }}
-    {{ render_field(form.course) }}
-    {{ render_field(form.group) }}
-    <button type="submit">Сохранить профиль студента</button>
-</form>
-{% elif user.teacher %}
-<form action="{{ url_for('teachers.profile') }}" method="post">
-    {{ form.csrf_token }}
-    {{ render_field(form.first_name, disabled=True) }}
-    {{ render_field(form.last_name, disabled=True) }}
-    {{ render_field(form.middle_name, disabled=True) }}
-    {{ render_field(form.position, disabled=True) }}
-</form>
+{{ render_form(form, url_for('students.profile')) }}
+{% elif user.teacher or user.has_teacher_email %}
+{{ render_form(form, "", disabled=user.teacher and user.teacher.is_verified) }}
 {% endif %}
 
 <form action="{{ url_for('users.logout') }}" method="post">

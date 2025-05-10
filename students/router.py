@@ -5,14 +5,17 @@ from database.deps import GetSession
 from templates import templates
 from users.deps import GetCurrentUser
 
+from .admin import router as admin_router
 from .controllers import save_student_profile
 from .forms import StudentForm
 
 router = APIRouter()
 
+router.include_router(admin_router, prefix="/admin")
+
 
 @router.post("/profile", name="students.profile")
-async def profile_post(
+async def students_profile_post(
     request: Request, user: GetCurrentUser, session: GetSession
 ):
     form = await StudentForm.create(request, session, user)

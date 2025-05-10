@@ -1,0 +1,101 @@
+{% macro render_table(table) %}
+<form>
+    <div class="is-flex py-2" style="gap: 15px">
+        <input type="hidden" name="page" value="{{ table.query.page }}" />
+        <input type="hidden" name="page_size" value="{{ table.query.page_size }}" />
+        <input type="search" class="input" placeholder="Поиск..." name="search" value="{{ table.query.search }}" />
+        <button type="submit" class="button is-link">Найти</button>
+    </div>
+</form>
+<table class="table is-striped is-fullwidth">
+    <thead>
+        <tr>
+            {% for field in table.fields %}
+            <th>{{ field.header }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for entity in table.page.entities %}
+        <tr>
+            <form>
+                {%for field in table.fields %}
+                <td>
+                    {{ field.widget(table.get_field_value(entity, field.field), entity, table._request) }}
+                </td>
+                {% endfor %}
+            </form>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<div class="is-flex is-justify-content-space-between">
+    <p>Всего строк: {{ table.page.total }}</p>
+    <div class="is-flex is-align-items-center" style="gap: 5px">
+        <p>Строк на странице</p>
+        <div class="select">
+            <select onchange="location = this.value">
+                {% for option in [10, 20, 50, 100] %}
+                <option value="{{ table.get_page_size_link(option) }}" {% if table.query.page_size==option %}
+                    selected="" {% endif %}>
+                    {{ option }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
+<nav class="pagination is-centered py-5" role="navigation" aria-label="pagination">
+    <a href="{{ table.get_page_link(table.query.page - 1) if table.query.page != 0 else '' }}"
+        class="pagination-previous" {% if table.query.page==0%}disabled{% endif %}>
+        Предыдущая
+    </a>
+    <a href="{{ table.get_page_link(table.query.page + 1) if table.query.page != table.total_pages - 1 else '' }}"
+        class="pagination-next" {% if table.query.page==table.total_pages - 1 %}disabled{% endif %}>
+        Следующая
+    </a>
+    <ul class="pagination-list">
+        {% if table.query.page - 1 >= 0 %}
+        <li>
+            <a href="{{ table.get_page_link(0) }}" class="pagination-link">1</a>
+        </li>
+        {% endif %}
+
+        {% if table.query.page - 1 > 0 %}
+        <li>
+            <span class="pagination-ellipsis">&hellip;</span>
+        </li>
+        <li>
+            <a class="pagination-link" href="{{ table.get_page_link(table.query.page - 1) }}">
+                {{ table.query.page }}
+            </a>
+        </li>
+        {% endif %}
+        <li>
+            <a class="pagination-link is-current" aaia-current="page"
+                href="{{ table.get_page_link(table.query.page) }}">
+                {{ table.query.page + 1 }}
+            </a>
+        </li>
+        {% if table.total_pages - 1 > table.query.page + 1 %}
+        <li>
+            <a class="pagination-link" href="{{ table.get_page_link(table.query.page + 1) }}">
+                {{ table.query.page + 2 }}
+            </a>
+        </li>
+        <li>
+            <span class="pagination-ellipsis">&hellip;</span>
+        </li>
+        {% endif %}
+
+        {% if table.total_pages - 1 >= table.query.page + 1 %}
+        <li>
+            <a class="pagination-link" href="{{ table.get_page_link(table.total_pages - 1) }}">
+                {{ table.total_pages }}
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+<button type="submit"></button>
+{% endmacro %}

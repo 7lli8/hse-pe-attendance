@@ -1,13 +1,97 @@
-{% macro render_field(field) %}
-<div class="form-group">
-    {{ field.label }}
-    {{ field(class="form-control" if field.type != 'SubmitField' else "btn btn-primary", **kwargs) }}
-    {% if field.errors %}
-    <div class="text-danger">
-        {% for error in field.errors %}
-        <small>{{ error }}</small>
-        {% endfor %}
+{% macro field_description(field) %}
+{% if field.errors %}
+{% for error in field.errors %}
+<p class="help is-danger">{{ error }}</p>
+{% endfor %}
+{% else %}
+{% if field.description %}
+<p class="help is-italic">{{ field.description }}</p>
+{% endif %}
+{% endif %}
+{% endmacro %}
+
+
+{% macro render_field(field, disabled=False) %}
+{% if field.widget.input_type != 'hidden' %}
+<div class="field is-horizontal">
+    <div class="field-label">
+        {% if field.widget.input_type not in ('checkbox', 'radio', 'submit') %}
+        <label class="label">{{ field.label.text|safe }}{% if field.flags.required %} <span
+                class="has-text-danger has-text-weight-bold">*</span>{% endif %}</label>
+        {% endif %}
     </div>
-    {% endif %}
+    <div class="field-body">
+        {% if field.widget.input_type in ('checkbox', 'radio') or field.type == 'SelectField' %}
+        <div class="field is-narrow">
+            <div class="control">
+                {% if field.type == 'SelectField' %}
+                <div class="select is-fullwidth">
+                    {{ field(disabled=disabled, **kwargs) }}
+                </div>
+                {% else %}
+                <label class="{{ field.widget.input_type }}">
+                    {{ field(disabled=disabled, **kwargs) }} {{ field.label.text|safe }}
+                </label>
+                {% endif %}
+            </div>
+            {{ field_description(field) }}
+        </div>
+        {% else %}
+        <div class="field">
+            <div class="control">
+                {% if field.type == 'TextAreaField' %}
+                {{ field(class_='textarea', disabled=disabled) }}
+                {% else %}
+                {{ field(class_='input', disabled=disabled, **kwargs) }}
+                {% endif %}
+            </div>
+            {{ field_description(field) }}
+        </div>
+        {% endif %}
+    </div>
 </div>
+{% else %}
+{{ field(**kwargs) }}
+{% endif %}
+
+{% endmacro %}
+
+{% macro form_errors(form) %}
+{% if form.errors %}
+{% for fieldname, errors in form.errors.items() %}
+{% for error in errors %}
+<div class="help is-danger">{{ error }}</div>
+{% endfor %}
+
+{% endfor %}
+{% endif %}
+{% endmacro %}
+
+{% macro render_form_fields(form, disabled=False) %}
+{{ form_errors(form) }}
+{% for field in form %}
+{{ render_field(field, disabled=disabled) }}
+{% endfor %}
+{% endmacro %}
+
+{% macro render_form_buttons(buttons) %}
+<div class="field is-horizontal">
+    <div class="field-label"></div>
+    <div class="field-body">
+        <div class="field">
+            <div class="control">
+                {% for button in buttons %}
+                {{ button.render() }}&nbsp;
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro render_form(form, action, box=False, disabled=False) %}
+<form method="post" action="{{ action }}" role="form" novalidate{% if box %} class="box" {% endif %}>
+    {{ render_form_fields(form, disabled=disabled) }}
+    {{ render_form_buttons(form.buttons) }}
+</form>
 {% endmacro %}
