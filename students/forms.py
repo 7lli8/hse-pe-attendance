@@ -33,7 +33,7 @@ class StudentForm(StarletteForm):
         groups = get_groups_choices(session)
         form = await StudentForm.from_formdata(request, obj=user.student)
         form.group.choices = groups
-        if user.student:
+        if user.student and request.method == "GET":
             form.group.data = user.student.group.name
 
         return form

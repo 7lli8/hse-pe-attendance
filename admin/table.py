@@ -1,9 +1,9 @@
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass
 from math import ceil
-from typing import Any, Callable, Generic, TypeVar
+from typing import Annotated, Any, Callable, Generic, TypeVar
 
-from fastapi import Request
+from fastapi import Query, Request
 from pydantic import BaseModel, NonNegativeInt
 from sqlalchemy import Select, func
 from sqlalchemy.orm import Session
@@ -23,6 +23,9 @@ class TableQuery(BaseModel):
     page: NonNegativeInt = 0
     page_size: NonNegativeInt = 20
     search: str = ""
+
+
+GetTableQuery = Annotated[TableQuery, Query()]
 
 
 class Table(Generic[T], metaclass=ABCMeta):

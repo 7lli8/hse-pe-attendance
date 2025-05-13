@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% from "_macros.html" import render_form %}
+
+{% block title %}
+Редактирование преподавателя
+{% endblock %}
+
+{% block content %}
+<h4 class="title is-4">Редактирование преподавателя {{ teacher.corporate_email }}</h4>
+{{ render_form(form) }}
+{% endblock %}

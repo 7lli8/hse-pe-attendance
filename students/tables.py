@@ -27,7 +27,7 @@ class StudentsAdminTable(Table[User]):
             select(User)
             .join(Student)
             .join(Group)
-            .filter(
+            .where(
                 User.corporate_email.ilike(ilike)
                 | Student.first_name.ilike(ilike)
                 | Student.last_name.ilike(ilike)

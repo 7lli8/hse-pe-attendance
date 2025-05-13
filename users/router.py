@@ -74,6 +74,7 @@ async def login_post(request: Request, session: GetSession):
 @router.get("/profile", name="users.profile")
 async def profile(request: Request, session: GetSession, user: GetCurrentUser):
     form = await get_user_form(request, session, user)
+    print(form.data)
     return templates.TemplateResponse(
         request,
         "users/profile.html",

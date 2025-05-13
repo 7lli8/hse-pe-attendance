@@ -34,6 +34,7 @@ def save_student_profile(
     form.group.data = group
 
     form.populate_obj(student)
+    student.group_id = group.id
 
     session.add(student)
     session.commit()

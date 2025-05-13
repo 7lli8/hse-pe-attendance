@@ -1,7 +1,7 @@
 {% macro render_table(table) %}
 <form>
     <div class="is-flex py-2" style="gap: 15px">
-        <input type="hidden" name="page" value="{{ table.query.page }}" />
+        <input type="hidden" name="page" value="0" />
         <input type="hidden" name="page_size" value="{{ table.query.page_size }}" />
         <input type="search" class="input" placeholder="Поиск..." name="search" value="{{ table.query.search }}" />
         <button type="submit" class="button is-link">Найти</button>
