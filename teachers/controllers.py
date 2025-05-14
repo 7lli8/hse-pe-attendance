@@ -16,9 +16,7 @@ def get_teacher(session: Session, user_id: int) -> User | None:
 
 
 def get_teachers(session: Session) -> list[Teacher]:
-    return list(
-        session.scalars(select(Teacher).order_by(Teacher.last_name)).all()
-    )
+    return list(session.scalars(select(Teacher).order_by(Teacher.last_name)).all())
 
 
 def get_teachers_table(

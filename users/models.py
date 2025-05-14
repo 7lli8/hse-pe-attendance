@@ -15,9 +15,7 @@ class User(Base):
     corporate_email: Mapped[str] = mapped_column(unique=True)
     is_active: Mapped[bool] = mapped_column(default=True)
 
-    is_admin: Mapped[bool] = mapped_column(
-        default=False, server_default="false"
-    )
+    is_admin: Mapped[bool] = mapped_column(default=False, server_default="false")
 
     hashed_password: Mapped[str]
     created_at: Mapped[datetime] = mapped_column(

@@ -11,8 +11,12 @@
 {% if user.student or user.has_student_email %}
 {{ render_form(form, url_for('students.profile')) }}
 {% elif user.teacher or user.has_teacher_email %}
-{{ render_form(form, "", disabled=user.teacher and user.teacher.is_verified) }}
+{% set is_disabled = user.teacher.is_verified if user.teacher else False %}
+{{ render_form(form, url_for('students.profile'), disabled=is_disabled) }}
+{% else %}
+{{ render_form(form, "", disabled=False) }}
 {% endif %}
+
 
 <form action="{{ url_for('users.logout') }}" method="post">
     <button type="submit">Выйти</button>

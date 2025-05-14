@@ -14,9 +14,7 @@ class RegisterForm(StarletteForm):
         "Пароль",
         [
             validators.DataRequired(),
-            validators.EqualTo(
-                "password_confirm", message="Пароли не совпадают"
-            ),
+            validators.EqualTo("password_confirm", message="Пароли не совпадают"),
         ],
     )
     password_confirm = fields.PasswordField("Повторите пароль")
@@ -37,5 +35,5 @@ class LoginForm(StarletteForm):
 async def get_user_form(request: Request, session: Session, user: User):
     if user.student or user.has_student_email:
         return await StudentForm.create(request, session, user)
-    if user.teacher:
+    if user.teacher or user.has_teacher_email:
         return await TeacherForm.from_formdata(request, obj=user.teacher)

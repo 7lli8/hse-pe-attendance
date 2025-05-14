@@ -1,11 +1,26 @@
 {% extends "layout.html" %}
-{% from "_macros.html" import render_form %}
+{% from "_macros.html" import render_field %}
 
 {% block title %}
-Регистрация
+Вход
 {% endblock %}
 
 {% block content %}
-{{ render_form(form, url_for('users.login')) }}
-<a href="{{ url_for('users.register') }}">или создайте аккаунт</a>
+<div class="columns is-centered is-vcentered is-fullheight" style="min-height: 100vh;">
+    <div class="column is-half">
+        <form action="{{ url_for('users.login') }}" method="post" class="box">
+            {{ form.csrf_token }}
+            {{ render_field(form.email) }}
+            {{ render_field(form.password) }}
+            <div class="field is-grouped is-justify-content-center mt-4">
+                <div class="control">
+                    <button class="button is-link" type="submit">Войти в аккаунт</button>
+                </div>
+            </div>
+        </form>
+        <p class="has-text-centered">
+            <a href="{{ url_for('users.register') }}">или создайте аккаунт</a>
+        </p>
+    </div>
+</div>
 {% endblock %}
