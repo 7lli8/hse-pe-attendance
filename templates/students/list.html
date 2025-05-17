@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% from "_table.html" import render_table %}
+
+{% block title %}
+Список студентов
+{% endblock %}
+
+{% block content %}
+{{ render_table(table) }}
+{% endblock %}

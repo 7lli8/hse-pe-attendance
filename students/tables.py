@@ -1,24 +1,46 @@
 from sqlalchemy import Select, select
 
 from admin.table import Table, TableField
-from admin.widgets import LinkWidget
+from admin.widgets import (
+    ContainerWidget,
+    IconButtonWidget,
+    LinkWidget,
+    StringWidget,
+)
 from groups.models import Group
 from users.models import User
 
 from .models import Student
 
+common_fields = []
 
-class StudentsAdminTable(Table[User]):
+
+class StudentsCommonTable(Table[User]):
     fields = [
-        TableField(
-            "corporate_email",
-            "Почта",
-            LinkWidget("students.admin.update", lambda e: {"user_id": e.id}),
-        ),
         TableField("student.last_name", "Фамилия"),
         TableField("student.first_name", "Имя"),
         TableField("student.middle_name", "Отчество"),
         TableField("student.group.name", "Группа"),
+        TableField(
+            "student.total_attendances",
+            "Посещений",
+            ContainerWidget(
+                [
+                    StringWidget(),
+                    IconButtonWidget(
+                        "attendances.create",
+                        lambda e: {"user_id": e.id},
+                        icon="fa-plus",
+                    ),
+                    IconButtonWidget(
+                        "attendances.create",
+                        lambda e: {"user_id": e.id},
+                        icon="fa-plus",
+                        label="Доп.",
+                    ),
+                ]
+            ),
+        ),
     ]
 
     def get_query(self) -> Select:
@@ -35,3 +57,25 @@ class StudentsAdminTable(Table[User]):
             )
             .order_by(Student.last_name)
         )
+
+
+class StudentsAdminTable(StudentsCommonTable):
+    fields = [
+        TableField(
+            "corporate_email",
+            "Почта",
+            LinkWidget("students.admin.update", lambda e: {"user_id": e.id}),
+        ),
+        *StudentsCommonTable.fields,
+    ]
+
+
+class StudentsTeacherTable(StudentsCommonTable):
+    fields = [
+        TableField(
+            "corporate_email",
+            "Почта",
+            LinkWidget("attendances.student.list", lambda e: {"user_id": e.id}),
+        ),
+        *StudentsCommonTable.fields,
+    ]

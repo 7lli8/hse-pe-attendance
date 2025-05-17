@@ -1,11 +1,14 @@
 {% extends "layout.html" %}
 {% from "_macros.html" import render_form %}
+{% from "_table.html" import render_table %}
 
 {% block title %}
 Редактирование студента
 {% endblock %}
 
 {% block content %}
-<h4 class="title is-4">Редактирование студента {{ student.corporate_email }}</h4>
+<h4 class="title is-4">Редактирование студента {{ student.full_name }}({{ student.corporate_email }})</h4>
 {{ render_form(form) }}
+<h4 class="title is-4">Посещения</h4>
+{{ render_table(attendances_table) }}
 {% endblock %}

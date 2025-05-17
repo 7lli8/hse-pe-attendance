@@ -19,3 +19,5 @@ class ExtraAttendance(Base):
     event_date: Mapped[date] = mapped_column(default=date.today)
 
     visits_count: Mapped[int] = mapped_column(nullable=False)
+
+    is_expired: Mapped[bool] = mapped_column(server_default="false")

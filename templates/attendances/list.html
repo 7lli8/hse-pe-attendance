@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% from "_table.html" import render_table %}
+
+{% block title %}
+Посещяемость студента
+{% endblock %}
+
+{% block content %}
+<h4 class="title is-4">Студент - {{ student.full_name }}</h4>
+<h6 class="title is-6">Посещения</h6>
+{{ render_table(table) }}
+{% endblock %}

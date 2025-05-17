@@ -4,6 +4,7 @@ from starlette_wtf import CSRFProtectMiddleware
 
 from attendance_requirements.models import AttendanceRequirement  # noqa
 from attendances.models import Attendance  # noqa
+from attendances.router import router as attendances_router
 from extra_attendances.models import ExtraAttendance  # noqa
 from groups.models import Group  # noqa
 from schedule.models import Schedule  # noqa
@@ -33,6 +34,7 @@ app.include_router(teachers_router, prefix="/teachers")
 app.include_router(users_router, prefix="/users")
 app.include_router(students_router, prefix="/students")
 app.include_router(schedule_router, prefix="/schedule")
+app.include_router(attendances_router, prefix="/attendances")
 
 
 @app.get("/")

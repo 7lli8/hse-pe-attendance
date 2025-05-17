@@ -21,9 +21,7 @@ def register_user(
     return user
 
 
-def login_user(
-    session: Session, request: Request, form: LoginForm
-) -> User | None:
+def login_user(session: Session, request: Request, form: LoginForm) -> User | None:
     user = get_user_by_email(session, form.email.data)
     if not user:
         form.email.errors = ("Пользователь не найден",)

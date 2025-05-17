@@ -8,17 +8,23 @@ from users.models import User
 
 from .forms import StudentForm
 from .models import Student
-from .tables import StudentsAdminTable
+from .tables import StudentsAdminTable, StudentsTeacherTable
 
 
 def get_student(session: Session, user_id: int) -> User | None:
     return get_user_by_id(session, user_id)
 
 
-def get_students_table(
+def get_students_admin_table(
     request: Request, session: Session, query: TableQuery
 ) -> StudentsAdminTable:
     return StudentsAdminTable(request, session, query)
+
+
+def get_students_teacher_table(
+    request: Request, session: Session, query: TableQuery
+) -> StudentsTeacherTable:
+    return StudentsTeacherTable(request, session, query)
 
 
 def save_student_profile(

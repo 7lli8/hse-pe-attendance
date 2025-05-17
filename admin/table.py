@@ -30,8 +30,7 @@ GetTableQuery = Annotated[TableQuery, Query()]
 
 class Table(Generic[T], metaclass=ABCMeta):
     action: str | None = None
-    fields: list[TableField] = []
-    fields_mappers: dict[str, Callable[[Any], str]] = {}
+    fields: list[TableField[T]] = []
 
     query: TableQuery
 
@@ -79,6 +78,7 @@ class Table(Generic[T], metaclass=ABCMeta):
                 )
             )
             .scalars()
+            .unique()
             .all()
         )
         return EntityPage(entities=entities, total=total)
@@ -86,10 +86,12 @@ class Table(Generic[T], metaclass=ABCMeta):
     @abstractmethod
     def get_query(self) -> Select: ...
 
-    def get_field_value(self, entity: T, field: str) -> str:
+    def get_field_value(
+        self, entity: T, field: str | Callable[[T], str]
+    ) -> str:
+        if callable(field):
+            return field(entity)
         value = self._get_field_by_path(entity, field)
-        if field in self.fields_mappers:
-            return self.fields_mappers[field](value)
         if value is None:
             return ""
         return str(value)

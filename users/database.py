@@ -7,9 +7,11 @@ from .passwords import create_password
 
 
 def get_user_by_id(session: Session, user_id: int) -> User | None:
-    return session.execute(
-        select(User).where(User.id == user_id)
-    ).scalar_one_or_none()
+    return (
+        session.execute(select(User).where(User.id == user_id))
+        .unique()
+        .scalar_one_or_none()
+    )
 
 
 def create_user(session: Session, email: str, password: str) -> User | None:
@@ -27,6 +29,8 @@ def create_user(session: Session, email: str, password: str) -> User | None:
 
 
 def get_user_by_email(session: Session, email: str) -> User | None:
-    return session.execute(
-        select(User).where(User.corporate_email == email)
-    ).scalar()
+    return (
+        session.execute(select(User).where(User.corporate_email == email))
+        .unique()
+        .scalar()
+    )

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Request, status
 from fastapi.responses import RedirectResponse
 
+from admin.table import GetTableQuery
 from database.deps import GetSession
 from templates import templates
 
@@ -17,7 +18,9 @@ async def register_get(
     request: Request,
 ):
     form = RegisterForm(request)
-    return templates.TemplateResponse(request, "users/register.html", {"form": form})
+    return templates.TemplateResponse(
+        request, "users/register.html", {"form": form}
+    )
 
 
 @router.post("/register", name="users.register")
@@ -46,17 +49,23 @@ async def login_get(
     request: Request,
 ):
     form = LoginForm(request)
-    return templates.TemplateResponse(request, "users/login.html", {"form": form})
+    return templates.TemplateResponse(
+        request, "users/login.html", {"form": form}
+    )
 
 
 @router.post("/login", name="users.login")
 async def login_post(request: Request, session: GetSession):
     form = await LoginForm.from_formdata(request)
     if not await form.validate():
-        return templates.TemplateResponse(request, "users/login.html", {"form": form})
+        return templates.TemplateResponse(
+            request, "users/login.html", {"form": form}
+        )
     user = login_user(session, request, form)
     if not user:
-        return templates.TemplateResponse(request, "users/login.html", {"form": form})
+        return templates.TemplateResponse(
+            request, "users/login.html", {"form": form}
+        )
     return RedirectResponse(
         request.url_for("users.profile"),
         status.HTTP_302_FOUND,
@@ -64,12 +73,20 @@ async def login_post(request: Request, session: GetSession):
 
 
 @router.get("/profile", name="users.profile")
-async def profile(request: Request, session: GetSession, user: GetCurrentUser):
+async def profile(
+    request: Request,
+    session: GetSession,
+    user: GetCurrentUser,
+    query: GetTableQuery,
+):
     form = await get_user_form(request, session, user)
     return templates.TemplateResponse(
         request,
         "users/profile.html",
-        {"user": user, "form": form},
+        {
+            "user": user,
+            "form": form,
+        },
     )
 
 

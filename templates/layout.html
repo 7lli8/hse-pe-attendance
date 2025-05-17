@@ -13,18 +13,99 @@
 </head>
 
 <body>
-    <nav style="display: flex; justify-content: flex-end;">
-        {% if user %}
-        <div>
-            <a href="{{ url_for('users.profile') }}">{{ user.corporate_email }}</a>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="{{ url_for('users.profile') }}">
+                HSE PE
+            </a>
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbar">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
         </div>
-        {% else %}
-        <div>
-            <a href="{{ url_for('users.login') }}">Войти</a>
+
+        <div id="navbar" class="navbar-menu">
+            <div class="navbar-start">
+                {% if user %}
+                {% if user.is_admin %}
+                <a class="navbar-item" href="{{ url_for('students.admin.list') }}">
+                    Студенты
+                </a>
+                <a class="navbar-item" href="{{ url_for('teachers.admin.list') }}">
+                    Преподаватели
+                </a>
+                <a class="navbar-item" href="{{ url_for('schedule') }}">
+                    Расписание
+                </a>
+                <a class="navbar-item" href="">
+                    Секции
+                </a>
+                <a class="navbar-item" href="">
+                    Группы
+                </a>
+                <a class="navbar-item" href="">
+                    Аттестация
+                </a>
+
+                {% elif user.teacher and user.teacher.is_verified %}
+                <a class="navbar-item" href="{{ url_for('students.list') }}">
+                    Студенты
+                </a>
+                <a class="navbar-item" href="{{ url_for('schedule') }}">
+                    Расписание
+                </a>
+                {% elif user.student %}
+                <a class="navbar-item" href="{{ url_for('attendances.student.list', user_id=user.id) }}">
+                    Посещения
+                </a>
+                <a class="navbar-item" href="{{ url_for('schedule') }}">
+                    Расписание
+                </a>
+                {% endif %}
+
+                {% else %}
+                <a class="navbar-item" href="{{ url_for('schedule') }}">
+                    Расписание
+                </a>
+                {% endif %}
+            </div>
+
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    {% if user %}
+                    <a href="{{ url_for('users.profile') }}">{{ user.corporate_email }}</a>
+                    {% else %}
+                    <div class="buttons">
+                        <a class="button is-primary" href="{{ url_for('users.register') }}">
+                            <strong>Регистрация</strong>
+                        </a>
+                        <a class="button is-light" href="{{ url_for('users.login') }}">
+                            Войти
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-        {% endif %}
     </nav>
     <main class="container">{% block content %}{% endblock %}</main>
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+        $navbarBurgers.forEach(el => {
+            el.addEventListener('click', () => {
+                const target = el.dataset.target;
+                const $target = document.getElementById(target);
+                el.classList.toggle('is-active');
+                $target.classList.toggle('is-active');
+
+            });
+        });
+
+    });
+</script>
 
 </html>

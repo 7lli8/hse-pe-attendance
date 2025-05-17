@@ -18,13 +18,11 @@
     <tbody>
         {% for entity in table.page.entities %}
         <tr>
-            <form>
-                {%for field in table.fields %}
-                <td>
-                    {{ field.widget(table.get_field_value(entity, field.field), entity, table._request) }}
-                </td>
-                {% endfor %}
-            </form>
+            {%for field in table.fields %}
+            <td>
+                {{ field.widget(table.get_field_value(entity, field.field), entity, table._request) }}
+            </td>
+            {% endfor %}
         </tr>
         {% endfor %}
     </tbody>

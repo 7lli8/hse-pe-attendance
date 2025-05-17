@@ -65,3 +65,12 @@ def get_optional_user(
 
 
 GetOptionalUser = Annotated[User | None, Depends(get_optional_user)]
+
+
+def get_teacher(request: Request, user: GetCurrentUser) -> User:
+    if user.teacher and user.teacher.is_verified or user.is_admin:
+        return user
+    raise get_unauthorized_and_redirect(request)
+
+
+GetTeacher = Annotated[User, Depends(get_teacher)]

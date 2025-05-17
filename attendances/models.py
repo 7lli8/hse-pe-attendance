@@ -1,9 +1,11 @@
 from datetime import datetime, timezone
 
 from sqlalchemy import TIMESTAMP, ForeignKey, func
-from sqlalchemy.orm import Mapped, mapped_column, validates
+from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from database import Base
+from sections.models import Section
+from teachers.models import Teacher
 
 
 class Attendance(Base):
@@ -23,6 +25,11 @@ class Attendance(Base):
         default=lambda: datetime.now(timezone.utc),
         nullable=False,
     )
+
+    is_expired: Mapped[bool] = mapped_column(server_default="false")
+
+    section: Mapped[Section] = relationship(lazy="joined")
+    teacher: Mapped[Teacher] = relationship(lazy="joined")
 
     @validates("visit_time")
     def validate_visit_time(self, key, value: datetime | None):

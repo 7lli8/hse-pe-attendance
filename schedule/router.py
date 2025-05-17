@@ -10,7 +10,7 @@ router = APIRouter()
 router.include_router(admin_router, prefix="/admin")
 
 
-@router.get("/")
+@router.get("/", name="schedule")
 def schedule_table(request: Request, session: GetSession):
     sections = get_all_sections(session)
     return templates.TemplateResponse(
