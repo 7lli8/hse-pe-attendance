@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+{% from "_macros.html" import render_form %}
+
+{% block title %}
+Расписание
+{% endblock %}
+
+{% block content %}
+<div class="is-flex is-align-items-center my-4" style="gap: 10px;">
+    <h4 class="title mb-0">Расписание</h4>
+    {% if user and user.is_admin %}
+    <div>
+        <a class="button is-success is-small" href="{{ url_for('schedule.admin.create') }}">
+            <span class="icon"><i class="fa-solid fa-plus"></i></span>
+            <span>Добавить</span>
+        </a>
+    </div>
+    {% endif %}
+</div>
+<table class="table is-fullwidth is-bordered is-hoverable">
+    <thead>
+        <tr>
+            <th>Секции</th>
+            <th><abbr title="Понедельник"></abbr>Пн</th>
+            <th><abbr title="Вторник"></abbr>Вт</th>
+            <th><abbr title="Среда"></abbr>Ср</th>
+            <th><abbr title="Четверг"></abbr>Чт</th>
+            <th><abbr title="Пятница"></abbr>Пт</th>
+            <th>Преподаватели</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for section in sections %}
+        {% for teacher in section.teachers %}
+        <tr>
+            {% if loop.first %}
+            <td rowspan="{{ section.teachers|length }}">{{ section.name }}</td>
+            {% endif %}
+            {% for day in weekdays[:-2] %}
+            <td>
+                {% for schedule in teacher.schedule %}
+                {% if schedule.weekday == day and schedule.section_id == section.id %}
+                <div class="is-flex">
+                    <p>{{ schedule.time_start.strftime("%H:%M") }} - {{ schedule.time_end.strftime("%H:%M") }}</p>
+                    {% if user and user.is_admin %}
+                    <a class="button is-small mx-1"
+                        href="{{ url_for('schedule.admin.update', schedule_id=schedule.id) }}">
+                        <span class="icon is-small"><i class="fa-solid fa-pen"></i></span>
+                    </a>
+                    {% endif %}
+                </div>
+                {% endif %}
+                {% endfor %}
+            </td>
+            {% endfor %}
+            <td>{{ teacher.full_name }}</td>
+        </tr>
+        {% endfor %}
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

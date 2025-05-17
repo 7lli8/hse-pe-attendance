@@ -1,7 +1,8 @@
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database import Base
+from schedule.models import Schedule
 
 
 class Teacher(Base):
@@ -19,3 +20,11 @@ class Teacher(Base):
     position: Mapped[str]
 
     is_verified: Mapped[bool] = mapped_column(server_default="false")
+
+    schedule: Mapped[list[Schedule]] = relationship(lazy="selectin")
+
+    @property
+    def full_name(self) -> str:
+        return " ".join(
+            filter(bool, [self.last_name, self.first_name, self.middle_name])
+        )

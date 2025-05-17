@@ -1,5 +1,4 @@
 from fastapi import Request
-from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from admin.table import TableQuery
@@ -8,6 +7,7 @@ from teachers.tables import TeachersAdminTable
 from users.database import get_user_by_id
 from users.models import User
 
+from .database import get_teachers
 from .models import Teacher
 
 
@@ -15,8 +15,8 @@ def get_teacher(session: Session, user_id: int) -> User | None:
     return get_user_by_id(session, user_id)
 
 
-def get_teachers(session: Session) -> list[Teacher]:
-    return list(session.scalars(select(Teacher).order_by(Teacher.last_name)).all())
+def get_all_teachers(session: Session) -> list[Teacher]:
+    return get_teachers(session)
 
 
 def get_teachers_table(

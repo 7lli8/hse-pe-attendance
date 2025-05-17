@@ -7,6 +7,7 @@ from attendances.models import Attendance  # noqa
 from extra_attendances.models import ExtraAttendance  # noqa
 from groups.models import Group  # noqa
 from schedule.models import Schedule  # noqa
+from schedule.router import router as schedule_router
 from sections.models import Section  # noqa
 from settings import settings
 from students.models import Student  # noqa
@@ -31,6 +32,7 @@ app.add_middleware(
 app.include_router(teachers_router, prefix="/teachers")
 app.include_router(users_router, prefix="/users")
 app.include_router(students_router, prefix="/students")
+app.include_router(schedule_router, prefix="/schedule")
 
 
 @app.get("/")

@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% from "_macros.html" import render_form %}
+
+{% block title %}
+Редактирование расписание
+{% endblock %}
+
+{% block content %}
+<h4 class="title is-4">Редактирование занятия</h4>
+{{ render_form(form) }}
+<form action="{{ url_for('schedule.admin.delete', schedule_id=schedule_id) }}" method="post">
+    <div class="field is-horizontal">
+        <div class="field-label"></div>
+        <div class="field-body">
+            <div class="field">
+                <div class="control">
+                    <input type="submit" class="button is-danger is-fullwidth" value="Удалить занятие">
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</form>
+{% endblock %}
