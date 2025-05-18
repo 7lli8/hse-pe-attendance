@@ -5,6 +5,12 @@
         <input type="hidden" name="page_size" value="{{ table.query.page_size }}" />
         <input type="search" class="input" placeholder="Поиск..." name="search" value="{{ table.query.search }}" />
         <button type="submit" class="button is-link">Найти</button>
+        {% if table.add_link_name %}
+        <a class="button is-success" href="{{ url_for(table.add_link_name, **kwargs) }}">
+            <span class="icon"><i class="fa-solid fa-plus"></i></span>
+            <span>Добавить</span>
+        </a>
+        {% endif %}
     </div>
 </form>
 <table class="table is-striped is-fullwidth">

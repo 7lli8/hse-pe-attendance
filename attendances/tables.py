@@ -56,3 +56,5 @@ class AttendancesTeacherTable(AttendancesStudentTable):
             ),
         ),
     ]
+
+    add_link_name = "attendances.create"

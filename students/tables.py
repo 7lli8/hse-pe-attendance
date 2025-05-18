@@ -33,8 +33,8 @@ class StudentsCommonTable(Table[User]):
                         icon="fa-plus",
                     ),
                     IconButtonWidget(
-                        "attendances.create",
-                        lambda e: {"user_id": e.id},
+                        "extra_attendances.create",
+                        lambda e: {"student_id": e.id},
                         icon="fa-plus",
                         label="Доп.",
                     ),

@@ -6,16 +6,18 @@ from attendance_requirements.models import AttendanceRequirement  # noqa
 from attendances.models import Attendance  # noqa
 from attendances.router import router as attendances_router
 from extra_attendances.models import ExtraAttendance  # noqa
+from extra_attendances.router import router as extra_attendances_router
 from groups.models import Group  # noqa
 from schedule.models import Schedule  # noqa
 from schedule.router import router as schedule_router
 from sections.models import Section  # noqa
+from sections.router import router as sections_router
 from settings import settings
 from students.models import Student  # noqa
 from students.router import router as students_router
 from teachers.models import Teacher  # noqa
 from teachers.router import router as teachers_router
-from templates import templates
+from fastapi.responses import RedirectResponse
 from users.models import User  # noqa
 from users.router import router as users_router
 
@@ -35,8 +37,10 @@ app.include_router(users_router, prefix="/users")
 app.include_router(students_router, prefix="/students")
 app.include_router(schedule_router, prefix="/schedule")
 app.include_router(attendances_router, prefix="/attendances")
+app.include_router(extra_attendances_router, prefix="/extra_attendances")
+app.include_router(sections_router, prefix="/sections")
 
 
 @app.get("/")
 def read_root(request: Request):
-    return templates.TemplateResponse(request, "index.html")
+    return RedirectResponse(url="users/login")

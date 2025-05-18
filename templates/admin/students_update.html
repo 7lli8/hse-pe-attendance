@@ -1,7 +1,6 @@
 {% extends "layout.html" %}
 {% from "_macros.html" import render_form %}
-{% from "_table.html" import render_table %}
-
+{% from "_table.html" import render_table with context %}
 {% block title %}
 Редактирование студента
 {% endblock %}
@@ -10,5 +9,7 @@
 <h4 class="title is-4">Редактирование студента {{ student.full_name }}({{ student.corporate_email }})</h4>
 {{ render_form(form) }}
 <h4 class="title is-4">Посещения</h4>
-{{ render_table(attendances_table) }}
+<a class="button" href="{{ request.url_for('extra_attendances.student.list', student_id=student.id) }}">Доп.
+    посещения</a>
+{{ render_table(attendances_table, user_id=student.id) }}
 {% endblock %}

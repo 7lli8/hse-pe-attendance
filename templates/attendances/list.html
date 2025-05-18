@@ -1,12 +1,13 @@
 {% extends "layout.html" %}
-{% from "_table.html" import render_table %}
-
+{% from "_table.html" import render_table with context %}
 {% block title %}
-Посещяемость студента
+Посещаемость студента
 {% endblock %}
 
 {% block content %}
-<h4 class="title is-4">Студент - {{ student.full_name }}</h4>
+<h4 class="title is-4">Студент - {{ student.student.full_name }}</h4>
 <h6 class="title is-6">Посещения</h6>
-{{ render_table(table) }}
+<a class="button" href="{{ request.url_for('extra_attendances.student.list', student_id=student.id) }}">Доп.
+    посещения</a>
+{{ render_table(table, user_id=student.id) }}
 {% endblock %}

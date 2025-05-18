@@ -31,6 +31,7 @@ GetTableQuery = Annotated[TableQuery, Query()]
 class Table(Generic[T], metaclass=ABCMeta):
     action: str | None = None
     fields: list[TableField[T]] = []
+    add_link_name: str | None = None
 
     query: TableQuery
 

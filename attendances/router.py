@@ -37,7 +37,7 @@ def attendance_list(
     return templates.TemplateResponse(
         request,
         "attendances/list.html",
-        {"student": student.student, "table": table},
+        {"student": student, "table": table},
     )
 
 

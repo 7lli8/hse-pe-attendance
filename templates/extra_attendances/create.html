@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% from "_macros.html" import render_form %}
+
+{% block title %}
+Доп. посещения
+{% endblock %}
+
+{% block content %}
+<h4 class="title is-4">Студент - {{ student.student.full_name }}</h4>
+<h6 class="title is-6">Доп. Посещения</h6>
+{{ render_form(form) }}
+{% endblock %}
