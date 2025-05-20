@@ -1,8 +1,10 @@
 from fastapi import FastAPI, Request
+from fastapi.responses import RedirectResponse
 from starlette_session import SessionMiddleware
 from starlette_wtf import CSRFProtectMiddleware
 
 from attendance_requirements.models import AttendanceRequirement  # noqa
+from attendance_requirements.router import router as attestation_router
 from attendances.models import Attendance  # noqa
 from attendances.router import router as attendances_router
 from extra_attendances.models import ExtraAttendance  # noqa
@@ -17,7 +19,6 @@ from students.models import Student  # noqa
 from students.router import router as students_router
 from teachers.models import Teacher  # noqa
 from teachers.router import router as teachers_router
-from fastapi.responses import RedirectResponse
 from users.models import User  # noqa
 from users.router import router as users_router
 
@@ -39,6 +40,7 @@ app.include_router(schedule_router, prefix="/schedule")
 app.include_router(attendances_router, prefix="/attendances")
 app.include_router(extra_attendances_router, prefix="/extra_attendances")
 app.include_router(sections_router, prefix="/sections")
+app.include_router(attestation_router, prefix="/attestation")
 
 
 @app.get("/")

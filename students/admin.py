@@ -26,9 +26,7 @@ def students_admin_get(
     _: GetAdmin,
 ):
     table = get_students_admin_table(request, session, query)
-    return templates.TemplateResponse(
-        request, "admin/students.html", {"table": table}
-    )
+    return templates.TemplateResponse(request, "admin/students.html", {"table": table})
 
 
 @router.get("/{user_id}", name="students.admin.update")
@@ -43,9 +41,7 @@ async def students_admin_update(
     if not user:
         raise HTTPException(status.HTTP_404_NOT_FOUND)
     form = await StudentForm.create(request, session, user)
-    attendances_table = get_attendances_table(
-        request, session, query, user_id, admin
-    )
+    attendances_table = get_attendances_table(request, session, query, user_id, admin)
 
     return templates.TemplateResponse(
         request,
@@ -63,14 +59,18 @@ async def students_admin_update_post(
     request: Request,
     session: GetSession,
     user_id: int,
-    _: GetAdmin,
+    admin: GetAdmin,
+    query: GetTableQuery,
 ):
     user = get_student(session, user_id)
     if not user:
         raise HTTPException(status.HTTP_404_NOT_FOUND)
     form = await StudentForm.create(request, session, user)
+    attendances_table = get_attendances_table(request, session, query, user_id, admin)
     save_student_profile(session, form, user)
 
     return templates.TemplateResponse(
-        request, "admin/students_update.html", {"form": form, "student": user}
+        request,
+        "admin/students_update.html",
+        {"form": form, "student": user, "attendances_table": attendances_table},
     )

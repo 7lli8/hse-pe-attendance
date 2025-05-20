@@ -14,16 +14,14 @@ class CheckboxListWidget(widgets.ListWidget):
         html = []
         for subfield in field:
             html.append(
-                f'<label class="checkbox">{subfield(checked=subfield.data in field.data)}\n{subfield.label.text}</label>'
+                f'<label class="checkbox">{subfield(checked=subfield.data in (field.data or []))}\n{subfield.label.text}</label>'
             )
         checkboxes = "".join(html)
         return Markup(f'<div class="checkboxes">{checkboxes}</div>')
 
 
 class SectionForm(StarletteForm):
-    name = fields.StringField(
-        "Название", validators=[validators.DataRequired()]
-    )
+    name = fields.StringField("Название", validators=[validators.DataRequired()])
     teachers = fields.SelectMultipleField(
         "Преподаватели",
         validators=[validators.DataRequired()],
@@ -43,8 +41,6 @@ class SectionForm(StarletteForm):
             (teacher.user_id, teacher.full_name) for teacher in teachers
         ]
         if section and request.method == "GET":
-            form.teachers.data = [
-                teacher.user_id for teacher in section.teachers
-            ]
+            form.teachers.data = [teacher.user_id for teacher in section.teachers]
 
         return form

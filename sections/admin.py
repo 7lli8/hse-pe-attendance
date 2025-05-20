@@ -1,27 +1,31 @@
 from fastapi import APIRouter, HTTPException, Request, status
 from fastapi.responses import RedirectResponse
 
+from admin.table import GetTableQuery
 from database.deps import GetSession
-from sections.controllers import (
-    delete_section,
-    get_section_form,
-    save_section_form,
-)
 from templates import templates
 from users.deps import GetAdmin
+
+from .controllers import (
+    delete_section,
+    get_section_form,
+    get_sections_table,
+    save_section_form,
+)
 
 router = APIRouter()
 
 
 @router.get("/", name="sections.admin.list")
-def sections_list():
-    pass
+def sections_list(
+    request: Request, session: GetSession, query: GetTableQuery, _: GetAdmin
+):
+    table = get_sections_table(request, session, query)
+    return templates.TemplateResponse(request, "admin/sections.html", {"table": table})
 
 
 @router.get("/create", name="sections.admin.create")
-async def create_section_form(
-    request: Request, session: GetSession, _: GetAdmin
-):
+async def create_section_form(request: Request, session: GetSession, _: GetAdmin):
     form = await get_section_form(request, session)
     return templates.TemplateResponse(
         request, "admin/sections_update.html", {"form": form}
@@ -29,9 +33,7 @@ async def create_section_form(
 
 
 @router.post("/create", name="sections.admin.create")
-async def create_section_form_post(
-    request: Request, session: GetSession, _: GetAdmin
-):
+async def create_section_form_post(request: Request, session: GetSession, _: GetAdmin):
     form = await get_section_form(request, session)
     if not await form.validate():
         return templates.TemplateResponse(

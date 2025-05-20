@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% from "_table.html" import render_table with context %}
+{% block title %}
+Список секций
+{% endblock %}
+
+{% block content %}
+{{ render_table(table) }}
+{% endblock %}
