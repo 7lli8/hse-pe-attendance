@@ -6,7 +6,8 @@ from .models import Student
 
 def get_students(session: Session) -> list[Student]:
     return list(
-        session.execute(select(Student).group_by(Student.last_name))
+        session.execute(select(Student).order_by(Student.last_name))
+        .unique()
         .scalars()
         .all()
     )

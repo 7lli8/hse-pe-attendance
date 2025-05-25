@@ -9,5 +9,19 @@
 <h6 class="title is-6">Посещения</h6>
 <a class="button" href="{{ request.url_for('extra_attendances.student.list', student_id=student.id) }}">Доп.
     посещения</a>
+<div class="box">
+    <p><strong>Всего посещений:</strong> {{ student.student.total_attendances }}</p>
+
+    <p>До зачёта ({{ progress.credit.required - progress.credit.current }} / {{ progress.credit.required }}):</p>
+    <progress class="progress is-info" value="{{ progress.credit.current }}" max="{{ progress.credit.required }}">
+        {{ (progress.credit.current / progress.credit.required * 10)|round(1) }}%
+    </progress>
+
+    <p class="mt-3">До автомата ({{ progress.auto.required - progress.auto.current }} / {{ progress.auto.required }}):
+    </p>
+    <progress class="progress is-success" value="{{ progress.auto.current }}" max="{{ progress.auto.required }}">
+        {{ (progress.auto.current / progress.auto.required * 10)|round(1) }}%
+    </progress>
+</div>
 {{ render_table(table, user_id=student.id) }}
 {% endblock %}

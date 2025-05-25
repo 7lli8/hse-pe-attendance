@@ -11,7 +11,7 @@ from .forms import AttestationForm
 router = APIRouter()
 
 
-@router.get("/attestation", name="attestation.admin")
+@router.get("/", name="attestation.admin")
 async def attestation_get(request: Request, session: GetSession, _: GetAdmin):
     form = await AttestationForm.create(request, session)
     return templates.TemplateResponse(
@@ -21,7 +21,7 @@ async def attestation_get(request: Request, session: GetSession, _: GetAdmin):
     )
 
 
-@router.post("/attestation", name="attestation.admin")
+@router.post("/", name="attestation.admin")
 async def attestation_post(request: Request, session: GetSession, _: GetAdmin):
     form = await AttestationForm.create(request, session)
     if not await form.validate():

@@ -1,8 +1,11 @@
+import io
 from typing import Annotated
 
 from fastapi import APIRouter, HTTPException, Query, Request, status
+from fastapi.responses import StreamingResponse
 
 from admin.table import GetTableQuery, TableQuery
+from attendance_requirements.database import get_requirements_visits
 from attendances.controllers import get_attendances_table
 from database.deps import GetSession
 from templates import templates
@@ -13,6 +16,8 @@ from .controllers import (
     get_students_admin_table,
     save_student_profile,
 )
+from .database import get_students
+from .export import generate_attendance_xlsx
 from .forms import StudentForm
 
 router = APIRouter()
@@ -27,6 +32,19 @@ def students_admin_get(
 ):
     table = get_students_admin_table(request, session, query)
     return templates.TemplateResponse(request, "admin/students.html", {"table": table})
+
+
+@router.get("/export", name="students.admin.export")
+def export_students_attendance(session: GetSession, _: GetAdmin):
+    students = get_students(session)
+    requirements = get_requirements_visits(session)
+    content = generate_attendance_xlsx(students, requirements)
+
+    return StreamingResponse(
+        io.BytesIO(content),
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": "attachment; filename=attestation.xlsx"},
+    )
 
 
 @router.get("/{user_id}", name="students.admin.update")

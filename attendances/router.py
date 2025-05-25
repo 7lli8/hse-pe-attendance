@@ -13,6 +13,8 @@ from .controllers import (
     get_attendances_table,
     save_attendance_form,
 )
+from students.export import get_attestation_progress
+from attendance_requirements.database import get_requirements_visits
 
 router = APIRouter()
 
@@ -34,10 +36,17 @@ def attendance_list(
     if not table:
         raise get_unauthorized_and_redirect(request)
 
+    requirements = get_requirements_visits(session)
+    total = student.student.total_attendances
+    progress = get_attestation_progress(total, requirements)
     return templates.TemplateResponse(
         request,
         "attendances/list.html",
-        {"student": student, "table": table},
+        {
+            "student": student,
+            "table": table,
+            "progress": progress,
+        },
     )
 
 
@@ -77,8 +86,6 @@ async def attendance_delete(
 ):
     attendance = delete_attendance(session, attendance_id)
     return RedirectResponse(
-        request.url_for(
-            "attendances.student.list", user_id=attendance.student_id
-        ),
+        request.url_for("attendances.student.list", user_id=attendance.student_id),
         status_code=status.HTTP_302_FOUND,
     )

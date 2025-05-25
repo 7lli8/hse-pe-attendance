@@ -5,5 +5,13 @@
 {% endblock %}
 
 {% block content %}
+<div class="level mb-4">
+    <div class="level-left">
+        <a class="button is-link" href="{{ url_for('students.admin.export') }}">
+            <span class="icon"><i class="fa-solid fa-file-excel"></i></span>
+            <span>Скачать ведомость</span>
+        </a>
+    </div>
+</div>
 {{ render_table(table) }}
 {% endblock %}

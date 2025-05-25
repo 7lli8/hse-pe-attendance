@@ -12,7 +12,7 @@
 {{ render_form(form, url_for('students.profile')) }}
 {% elif user.teacher or user.has_teacher_email %}
 {% set is_disabled = user.teacher.is_verified if user.teacher else False %}
-{{ render_form(form, url_for('students.profile'), disabled=is_disabled) }}
+{{ render_form(form, url_for('teachers.profile'), disabled=is_disabled) }}
 {% else %}
 {{ render_form(form, "", disabled=False) }}
 {% endif %}

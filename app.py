@@ -10,6 +10,7 @@ from attendances.router import router as attendances_router
 from extra_attendances.models import ExtraAttendance  # noqa
 from extra_attendances.router import router as extra_attendances_router
 from groups.models import Group  # noqa
+from groups.router import router as groups_router
 from schedule.models import Schedule  # noqa
 from schedule.router import router as schedule_router
 from sections.models import Section  # noqa
@@ -41,6 +42,7 @@ app.include_router(attendances_router, prefix="/attendances")
 app.include_router(extra_attendances_router, prefix="/extra_attendances")
 app.include_router(sections_router, prefix="/sections")
 app.include_router(attestation_router, prefix="/attestation")
+app.include_router(groups_router, prefix="/groups")
 
 
 @app.get("/")
