@@ -1,0 +1,73 @@
+services:
+  registry:
+    image: registry:2
+    restart: always
+    ports:
+      - "5000:5000"
+    networks:
+      - registry
+    volumes:
+      - registry-data:/var/lib/registry
+    environment:
+      - REGISTRY_STORAGE_DELETE_ENABLED=true
+  
+  registry_cleanup:
+    image: docker:cli
+    volumes:
+      - ./cleanup.sh:/cleanup.sh
+      - /var/run/docker.sock:/var/run/docker.sock
+    entrypoint: sh -c "chmod +x /cleanup.sh && /cleanup.sh"
+    networks:
+      - registry
+    depends_on:
+      - registry
+
+  postgres:
+    image: postgres:17
+    restart: always
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    env_file:
+      - ./postgres.env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  
+  caddy:
+    image: caddy:2.9
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - registry
+      - caddy
+    volumes:
+      - ./caddy/conf:/etc/caddy
+      - caddy-data:/data
+      - caddy-config:/config
+
+
+networks:
+  registry:
+    driver: bridge
+  postgres:
+    driver: bridge
+  caddy:
+    driver: bridge
+
+volumes:
+  registry-data:
+    driver: local
+  postgres-data:
+    driver: local
+  caddy-data:
+    driver: local
+  caddy-config:
+    driver: local

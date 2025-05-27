@@ -1,0 +1,62 @@
+- name: Deploy infrastructure
+  hosts: master
+  become: true
+
+  vars_files:
+    - ./vars/secrets.yaml
+    - ./vars/deploy.yaml
+
+  roles:
+    - geerlingguy.docker
+
+  tasks:
+    - name: Create user
+      ansible.builtin.user:
+        name: web
+        password: "{{ user.password | password_hash('sha512') }}"
+        state: present
+        createhome: true
+        groups:
+          - docker
+    - name: Create project root
+      ansible.builtin.file:
+        path: /var/www/hse-pe
+        state: directory
+        owner: web
+        group: web
+        mode: "0777"
+    - name: Copy postgres env
+      ansible.builtin.template:
+        src: ./postgres.env.j2
+        dest: /var/www/hse-pe/postgres.env
+        owner: web
+        group: web
+        mode: "0777"
+    - name: Copy infrastructure compose
+      ansible.builtin.copy:
+        src: ./docker-compose.infra.yaml
+        dest: /var/www/hse-pe/docker-compose.infra.yaml
+        owner: web
+        group: web
+        mode: "0777"
+    - name: Copy caddy config
+      ansible.builtin.copy:
+        src: ./caddy
+        dest: /var/www/hse-pe
+        owner: web
+        group: web
+        mode: "0777"
+    - name: Copy cleanup script
+      ansible.builtin.copy:
+        src: ./cleanup.sh
+        dest: /var/www/hse-pe/cleanup.sh
+        owner: web
+        group: web
+        mode: "0777"
+    - name: Run infra compose
+      community.docker.docker_compose_v2:
+        project_src: /var/www/hse-pe
+        pull: always
+        remove_orphans: true
+        files:
+          - docker-compose.infra.yaml

@@ -87,9 +87,7 @@ class Table(Generic[T], metaclass=ABCMeta):
     @abstractmethod
     def get_query(self) -> Select: ...
 
-    def get_field_value(
-        self, entity: T, field: str | Callable[[T], str]
-    ) -> str:
+    def get_field_value(self, entity: T, field: str | Callable[[T], str]) -> str:
         if callable(field):
             return field(entity)
         value = self._get_field_by_path(entity, field)

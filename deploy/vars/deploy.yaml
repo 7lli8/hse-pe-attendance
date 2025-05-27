@@ -1,0 +1,3 @@
+images:
+  backend: registry.hse.lovepaw.ru/backend:latest
+  backend_migrations: registry.hse.lovepaw.ru/backend-migrations:latest

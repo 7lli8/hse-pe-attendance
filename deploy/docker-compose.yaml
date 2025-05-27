@@ -1,0 +1,23 @@
+include:
+  - docker-compose.infra.yaml
+
+services:
+  backend:
+    image: ${BACKEND_IMAGE}
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - postgres
+      - caddy
+    env_file:
+      - ./backend.env
+  backend-migrations:
+    image: ${BACKEND_MIGRATIONS_IMAGE}
+    restart: on-failure:3
+    networks:
+      - postgres
+    env_file:
+      - ./backend.env
+    depends_on:
+      - postgres

@@ -1,0 +1,7 @@
+registry.hse.lovepaw.ru {
+    reverse_proxy registry:5000
+}
+
+hse.lovepaw.ru {
+    reverse_proxy backend:8080
+}

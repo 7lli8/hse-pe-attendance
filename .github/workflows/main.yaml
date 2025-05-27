@@ -1,0 +1,73 @@
+name: Build and deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-main:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Set up docker buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Build and push main service
+        env:
+          REGISTRY: ${{ secrets.REGISTRY }}
+          REPOSITORY: backend
+        run: |
+          docker build \
+            -t $REGISTRY/$REPOSITORY:${{ github.sha }} \
+            -t $REGISTRY/$REPOSITORY:latest .
+          docker push --all-tags $REGISTRY/$REPOSITORY
+      
+      - name: Build and push migrations
+        env:
+          REGISTRY: ${{ secrets.REGISTRY }}
+          REPOSITORY: backend-migrations
+        run: |
+          docker build \
+            -t $REGISTRY/$REPOSITORY:${{ github.sha }} \
+            -t $REGISTRY/$REPOSITORY:latest -f ./migrations.dockerfile .
+          docker push --all-tags $REGISTRY/$REPOSITORY
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build-main]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install python
+        uses: actions/setup-python@v5
+      
+      - name: Install ansible
+        run: pip install ansible passlib
+
+      - name: Run playbook
+        env:
+          KEY: ${{ secrets.CI_PRIVATE_KEY }}
+          VAULT_PASSWORD: ${{ secrets.VAULT_PASSWORD }}
+          INVENTORY: |
+            [master]
+            ${{ secrets.CI_SERVER }}
+          ANSIBLE_HOST_KEY_CHECKING: 'False'
+        run: |
+          cd deploy
+          echo "$KEY" > .ansible_key
+          chmod 600 .ansible_key
+          echo "$VAULT_PASSWORD" > .ansible_vault_password
+          echo "$INVENTORY" > .ansible_inventory
+          ansible-galaxy install -r requirements.yaml
+          ansible-playbook deploy.yaml \
+          --key-file .ansible_key \
+          --inventory .ansible_inventory \
+          --vault-password-file .ansible_vault_password
+          docker system prune -f
+

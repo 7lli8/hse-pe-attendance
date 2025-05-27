@@ -1,0 +1,38 @@
+- ansible.builtin.import_playbook: ./deploy-infra.yaml
+- name: Deploy services
+  hosts: master
+  become: true
+
+  vars_files:
+    - ./vars/secrets.yaml
+    - ./vars/deploy.yaml
+
+  tasks:
+    - name: Copy env
+      ansible.builtin.template:
+        src: ./.env.j2
+        dest: /var/www/hse-pe/.env
+        owner: web
+        group: web
+        mode: "0777"
+    - name: Copy backend env
+      ansible.builtin.template:
+        src: ./backend.env.j2
+        dest: /var/www/hse-pe/backend.env
+        owner: web
+        group: web
+        mode: "0777"
+    - name: Copy compose
+      ansible.builtin.copy:
+        src: ./docker-compose.yaml
+        dest: /var/www/hse-pe/docker-compose.yaml
+        owner: web
+        group: web
+        mode: "0777"
+    - name: Run compose
+      community.docker.docker_compose_v2:
+        project_src: /var/www/hse-pe
+        pull: always
+        remove_orphans: true
+        files:
+          - docker-compose.yaml
